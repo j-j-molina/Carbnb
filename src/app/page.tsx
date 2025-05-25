@@ -45,7 +45,7 @@ export default function Home() {
       if (selectedCategory === '2 Pasajeros') return car.pasajeros === 2;
       if (selectedCategory === '5 Pasajeros') return car.pasajeros === 5;
       if (selectedCategory === '6 - 8 Pasajeros') return car.pasajeros >= 6 && car.pasajeros <= 8;
-      if (selectedCategory === 'Especiales') return car.especial === true;
+      if (selectedCategory === 'Especiales') return ['coupé', 'coupe'].includes(car.carroceria?.toLowerCase());
       return true;
     })
     .sort((a, b) => {
