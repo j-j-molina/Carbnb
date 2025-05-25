@@ -208,33 +208,35 @@ export default function Home() {
         }}
       >
         {cars.map((car, idx) => (
-          <div
-            key={car.id || idx}
-            style={{
-              background: '#181818',
-              border: '2px solid #2d2d2d',
-              borderRadius: '8px',
-              boxShadow: '0 2px 8px rgba(0,0,0,0.7)',
-              padding: '0',
-              overflow: 'hidden',
-              display: 'flex',
-              flexDirection: 'column',
-              position: 'relative',
-              minHeight: '280px',
-            }}
-          >
-            <div style={{ width: '100%', height: '180px', background: '#222', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <img src={car.foto || car.imageUrl} alt={car.modelo || car.name} style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} />
-            </div>
-            <div style={{ padding: '16px', flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-              <div style={{ fontWeight: 'bold', color: '#fff', fontSize: '1.1rem', marginBottom: '8px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>{car.modelo || car.name}</div>
-              <div style={{ color: '#ccc', fontSize: '0.9rem', marginBottom: '8px' }}>{car.carroceria || car.category}</div>
-              <div style={{ color: '#aaa', fontSize: '0.85rem', marginBottom: '8px' }}>{car.marca || ''} {car.año || car.year} | {car.pasajeros || car.passengers} pasajeros | {car.combustible || car.fuel}</div>
-              <div style={{ position: 'absolute', bottom: 0, right: 0, background: '#a00', color: '#fff', fontWeight: 'bold', padding: '6px 14px', fontSize: '1rem', borderTopLeftRadius: '8px' }}>
-                ${car.precio ? car.precio.toLocaleString() : '1,000,000'}
+          <Link href={`/car/${car.id}`} key={car.id || idx} style={{ textDecoration: 'none' }}>
+            <div
+              style={{
+                background: '#181818',
+                border: '2px solid #2d2d2d',
+                borderRadius: '8px',
+                boxShadow: '0 2px 8px rgba(0,0,0,0.7)',
+                padding: '0',
+                overflow: 'hidden',
+                display: 'flex',
+                flexDirection: 'column',
+                position: 'relative',
+                minHeight: '280px',
+                cursor: 'pointer',
+              }}
+            >
+              <div style={{ width: '100%', height: '180px', background: '#222', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <img src={car.foto || car.imageUrl} alt={car.modelo || car.name} style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} />
+              </div>
+              <div style={{ padding: '16px', flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+                <div style={{ fontWeight: 'bold', color: '#fff', fontSize: '1.1rem', marginBottom: '8px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>{car.modelo || car.name}</div>
+                <div style={{ color: '#ccc', fontSize: '0.9rem', marginBottom: '8px' }}>{car.carroceria || car.category}</div>
+                <div style={{ color: '#aaa', fontSize: '0.85rem', marginBottom: '8px' }}>{car.marca || ''} {car.año || car.year} | {car.pasajeros || car.passengers} pasajeros | {car.combustible || car.fuel}</div>
+                <div style={{ position: 'absolute', bottom: 0, right: 0, background: '#a00', color: '#fff', fontWeight: 'bold', padding: '6px 14px', fontSize: '1rem', borderTopLeftRadius: '8px' }}>
+                  ${car.precio ? car.precio.toLocaleString() : '1,000,000'}
+                </div>
               </div>
             </div>
-          </div>
+          </Link>
         ))}
       </main>
     </div>
