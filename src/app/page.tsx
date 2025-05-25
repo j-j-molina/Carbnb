@@ -23,7 +23,7 @@ export default function Home() {
     return () => unsubscribe();
   }, []);
 
-  const categories = ['Destacados', 'Vanes', 'SUVs', 'Sedanes', 'Especiales'];
+  const categories = ['Destacados', '2 Pasajeros', '5 Pasajeros', '6 - 8 Pasajeros', 'Especiales'];
 
   useEffect(() => {
     const fetchCars = async () => {
@@ -136,6 +136,7 @@ export default function Home() {
           display: 'flex',
           alignItems: 'center',
           background: '#222',
+          marginBottom: 0,
         }}
       >
         <Image
@@ -145,42 +146,10 @@ export default function Home() {
           style={{ objectFit: 'cover', zIndex: 1, opacity: 0.5 }}
         />
         <div style={{ position: 'relative', zIndex: 2, marginLeft: 40 }}>
-          <Image src="/logo.png" alt="Carbnb Logo" width={260} height={110} />
+          <Image src="/logo.png" alt="Carbnb Logo" width={314.6} height={133.1} />
         </div>
-      </section>
-
-      {/* Filtro de categorías y ordenamiento */}
-      <div
-        style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'flex-end',
-          margin: '24px 0 0 0',
-          padding: '0 2rem',
-        }}
-      >
-        <div style={{ display: 'flex', gap: 0 }}>
-          {categories.map(cat => (
-            <button
-              key={cat}
-              onClick={() => setSelectedCategory(cat)}
-              style={{
-                background: selectedCategory === cat ? RACING_RED : '#fff',
-                color: selectedCategory === cat ? '#fff' : RACING_RED,
-                border: `2px solid ${RACING_RED}`,
-                borderRadius: '8px 8px 0 0',
-                fontWeight: 700,
-                fontSize: 16,
-                padding: '10px 32px',
-                cursor: 'pointer',
-                marginRight: 2,
-              }}
-            >
-              {cat}
-            </button>
-          ))}
-        </div>
-        <div>
+        {/* Selector de orden sobre la imagen, alineado a la derecha y más abajo */}
+        <div style={{ position: 'absolute', top: '92%', right: '2.2%', zIndex: 3, transform: 'translateY(-50%)' }}>
           <select
             value={sort}
             onChange={e => setSort(e.target.value)}
@@ -189,10 +158,11 @@ export default function Home() {
               color: '#fff',
               border: 'none',
               borderRadius: 4,
-              padding: '8px 16px',
+              padding: '8px 24px',
               fontWeight: 700,
               fontSize: 16,
               cursor: 'pointer',
+              boxShadow: '0 2px 8px rgba(0,0,0,0.2)'
             }}
           >
             <option value="">Precio: -</option>
@@ -200,37 +170,70 @@ export default function Home() {
             <option value="desc">Precio: Mayor a Menor</option>
           </select>
         </div>
+      </section>
+      {/* Filtros de categorías */}
+      <div style={{ display: 'flex', width: '100%', background: '#222', padding: '0 2rem', borderBottom: `2px solid ${RACING_RED}` }}>
+        {categories.map((category) => (
+          <button
+            key={category}
+            onClick={() => setSelectedCategory(category)}
+            style={{
+              flex: 1,
+              background: selectedCategory === category ? '#fff' : RACING_RED,
+              color: selectedCategory === category ? '#111' : '#fff',
+              border: `2px solid ${RACING_RED}`,
+              borderBottom: selectedCategory === category ? 'none' : `2px solid ${RACING_RED}`,
+              borderRadius: '8px 8px 0 0',
+              fontWeight: 700,
+              fontSize: 16,
+              padding: '10px 0',
+              cursor: 'pointer',
+              marginRight: category !== categories[categories.length - 1] ? 2 : 0,
+              transition: 'background 0.2s, color 0.2s',
+              zIndex: 4
+            }}
+          >
+            {category}
+          </button>
+        ))}
       </div>
-
       {/* Grid de autos */}
       <main
         style={{
-          padding: '2rem',
           display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
-          gap: '2rem',
+          gridTemplateColumns: 'repeat(3, 1fr)',
+          gap: '18px',
+          background: '#330000',
+          padding: '10px 32px',
         }}
       >
-        {cars.map(car => (
+        {cars.map((car, idx) => (
           <div
-            key={car.id}
-            style={{ background: '#222', padding: 16, borderRadius: 12, color: '#fff' }}
+            key={car.id || idx}
+            style={{
+              background: '#181818',
+              border: '2px solid #2d2d2d',
+              borderRadius: '8px',
+              boxShadow: '0 2px 8px rgba(0,0,0,0.7)',
+              padding: '0',
+              overflow: 'hidden',
+              display: 'flex',
+              flexDirection: 'column',
+              position: 'relative',
+              minHeight: '280px',
+            }}
           >
-            <Image
-              src={car.foto}
-              alt={car.modelo}
-              width={300}
-              height={180}
-              style={{ borderRadius: 8, objectFit: 'cover' }}
-            />
-            <h2 style={{ margin: '8px 0' }}>
-              {car.marca} {car.modelo}
-            </h2>
-            <p>Año: {car.anio || car.año}</p>
-            <p>Pasajeros: {car.pasajeros}</p>
-            <p>Puertas: {car.puertas}</p>
-            <p>Combustible: {car.combustible}</p>
-            <p>Carrocería: {car.carroceria}</p>
+            <div style={{ width: '100%', height: '180px', background: '#222', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <img src={car.foto || car.imageUrl} alt={car.modelo || car.name} style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} />
+            </div>
+            <div style={{ padding: '16px', flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+              <div style={{ fontWeight: 'bold', color: '#fff', fontSize: '1.1rem', marginBottom: '8px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>{car.modelo || car.name}</div>
+              <div style={{ color: '#ccc', fontSize: '0.9rem', marginBottom: '8px' }}>{car.carroceria || car.category}</div>
+              <div style={{ color: '#aaa', fontSize: '0.85rem', marginBottom: '8px' }}>{car.marca || ''} {car.año || car.year} | {car.pasajeros || car.passengers} pasajeros | {car.combustible || car.fuel}</div>
+              <div style={{ position: 'absolute', bottom: 0, right: 0, background: '#a00', color: '#fff', fontWeight: 'bold', padding: '6px 14px', fontSize: '1rem', borderTopLeftRadius: '8px' }}>
+                ${car.precio ? car.precio.toLocaleString() : '1,000,000'}
+              </div>
+            </div>
           </div>
         ))}
       </main>
