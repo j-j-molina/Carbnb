@@ -222,6 +222,8 @@ export default function Home() {
           background: '#330000',
           padding: '10px 32px',
         }}
+
+      
       >
         {filteredCars.map((car, idx) => (
           <Link href={`/car/${car.id}`} key={car.id || idx} style={{ textDecoration: 'none' }}>
@@ -257,5 +259,7 @@ export default function Home() {
       </main>
     </div>
   );
+
 }
+
 
