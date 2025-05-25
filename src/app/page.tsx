@@ -5,6 +5,8 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { collection, getDocs } from 'firebase/firestore';
 import { db } from '../../firebase/firebase';
+import { onAuthStateChanged, signOut } from 'firebase/auth';
+import { auth } from '../../firebase/firebase';
 
 const RACING_RED = '#D5001F';
 
@@ -12,8 +14,16 @@ export default function Home() {
   const [selectedCategory, setSelectedCategory] = useState('Destacados');
   const [sort, setSort] = useState('');
   const [cars, setCars] = useState<any[]>([]);
+  const [user, setUser] = useState(null);
 
-  const categories = ['Destacados', 'Vans', 'SUV', 'Sedan', 'Especiales'];
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      setUser(currentUser);
+    });
+    return () => unsubscribe();
+  }, []);
+
+  const categories = ['Destacados', 'Vanes', 'SUVs', 'Sedanes', 'Especiales'];
 
   useEffect(() => {
     const fetchCars = async () => {
@@ -43,38 +53,76 @@ export default function Home() {
         }}
       >
         <div style={{ marginLeft: 'auto', display: 'flex', gap: 16 }}>
-          <Link href="/login">
-            <button
-              style={{
-                background: RACING_RED,
-                color: '#fff',
-                border: 'none',
-                borderRadius: 4,
-                padding: '8px 20px',
-                fontWeight: 700,
-                fontSize: 16,
-                cursor: 'pointer',
-              }}
-            >
-              Iniciar Sesión
-            </button>
-          </Link>
-          <Link href="/register">
-            <button
-              style={{
-                background: RACING_RED,
-                color: '#fff',
-                border: 'none',
-                borderRadius: 4,
-                padding: '8px 20px',
-                fontWeight: 700,
-                fontSize: 16,
-                cursor: 'pointer',
-              }}
-            >
-              Registrarse
-            </button>
-          </Link>
+          {user ? (
+            <>
+              <Link href="/reservaciones">
+                <button
+                  style={{
+                    background: '#bd162c',
+                    color: '#fff',
+                    border: 'none',
+                    borderRadius: 4,
+                    padding: '8px 20px',
+                    fontWeight: 700,
+                    fontSize: 16,
+                    cursor: 'pointer',
+                  }}
+                >
+                  Mis Reservaciones
+                </button>
+              </Link>
+              <button
+                onClick={() => signOut(auth)}
+                style={{
+                  background: 'transparent',
+                  border: 'none',
+                  cursor: 'pointer',
+                  padding: 0,
+                  marginLeft: 8,
+                  display: 'flex',
+                  alignItems: 'center',
+                }}
+                title="Cerrar sesión"
+              >
+                <img src="/shutdown.png" alt="Cerrar sesión" style={{ height: 32, width: 32 }} />
+              </button>
+            </>
+          ) : (
+            <>
+              <Link href="/login">
+                <button
+                  style={{
+                    background: '#bd162c',
+                    color: '#fff',
+                    border: 'none',
+                    borderRadius: 4,
+                    padding: '8px 20px',
+                    fontWeight: 700,
+                    fontSize: 16,
+                    cursor: 'pointer',
+                  }}
+                >
+                  Iniciar Sesión
+                </button>
+              </Link>
+              <Link href="/register">
+                <button
+                  style={{
+                    background: '#bd162c',
+                    color: '#fff',
+                    border: 'none',
+                    borderRadius: 4,
+                    padding: '8px 20px',
+                    fontWeight: 700,
+                    fontSize: 16,
+                    cursor: 'pointer',
+                  }}
+                >
+                  Registrarse
+                </button>
+              </Link>
+            </>
+          )}
         </div>
       </header>
 
@@ -147,7 +195,7 @@ export default function Home() {
               cursor: 'pointer',
             }}
           >
-            <option value="">-</option>
+            <option value="">Precio: -</option>
             <option value="asc">Precio: Menor a Mayor</option>
             <option value="desc">Precio: Mayor a Menor</option>
           </select>
