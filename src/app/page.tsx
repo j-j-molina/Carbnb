@@ -26,7 +26,7 @@ export default function Home() {
 
       {/* Logo sobre fondo de imagen */}
       <section style={{ position: 'relative', width: '100%', height: 340, overflow: 'hidden', display: 'flex', alignItems: 'center', background: '#222' }}>
-        <Image src="/cars3.jpg" alt="Fondo" fill style={{ objectFit: 'cover', zIndex: 1, opacity: 0.5 }} />
+        <Image src="/background.jpg" alt="Fondo" fill style={{ objectFit: 'cover', zIndex: 1, opacity: 0.5 }} />
         <div style={{ position: 'relative', zIndex: 2, marginLeft: 40 }}>
           <Image src="/logo.png" alt="Carbnb Logo" width={260} height={110} />
         </div>
