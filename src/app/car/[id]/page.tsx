@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
-import { doc, getDoc } from "firebase/firestore";
+import { doc, getDoc, collection, addDoc, serverTimestamp, query, where, getDocs } from "firebase/firestore";
 import { db } from "../../../../firebase/firebase";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { useRouter } from "next/navigation";
@@ -11,10 +11,13 @@ export default function CarDetail() {
   const [car, setCar] = useState(null);
   const [loading, setLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [user, setUser] = useState(null);  // Guarda info usuario
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
+  const [message, setMessage] = useState("");
   const router = useRouter();
 
+  // Cargar datos del carro
   useEffect(() => {
     if (!id) return;
     const fetchCar = async () => {
@@ -30,13 +33,51 @@ export default function CarDetail() {
     fetchCar();
   }, [id]);
 
+  // Detectar usuario autenticado y guardar user
   useEffect(() => {
     const auth = getAuth();
     const unsubscribe = onAuthStateChanged(auth, (user) => {
-      setIsAuthenticated(!!user);
+      if (user) {
+        setIsAuthenticated(true);
+        setUser(user);
+      } else {
+        setIsAuthenticated(false);
+        setUser(null);
+      }
     });
     return () => unsubscribe();
   }, []);
+
+  // Función para reservar
+  const handleReservation = async () => {
+    if (!startDate || !endDate) {
+      setMessage("Por favor selecciona las fechas de inicio y fin.");
+      return;
+    }
+    if (new Date(startDate) > new Date(endDate)) {
+      setMessage("La fecha de inicio debe ser menor o igual a la fecha de fin.");
+      return;
+    }
+    try {
+      const reservationData = {
+        userId: user.uid,
+        carId: id,
+        startDate,
+        endDate,
+        carModelo: car.modelo,
+        carMarca: car.marca,
+        timestamp: serverTimestamp(),
+      };
+      await addDoc(collection(db, "reservas"), reservationData);
+      setMessage("Reserva realizada con éxito.");
+      // Redirigir a página de reservas después de 1.5 seg
+      setTimeout(() => {
+        router.push("/reservations");
+      }, 1500);
+    } catch (error) {
+      setMessage("Error al realizar la reserva: " + error.message);
+    }
+  };
 
   if (loading) return <div style={{ color: '#fff', background: '#330000', minHeight: '100vh' }}>Cargando...</div>;
   if (car === undefined) return <div style={{ color: '#fff', background: '#330000', minHeight: '100vh' }}>Auto no encontrado</div>;
@@ -100,9 +141,28 @@ export default function CarDetail() {
                 </div>
               </div>
               {isAuthenticated && (
-                <button style={{ background: "#e53935", color: "#fff", border: "none", borderRadius: 6, padding: "10px 28px", fontWeight: 600, fontSize: 18, cursor: "pointer", marginTop: 8, boxShadow: "0 2px 8px #0005" }}>
-                  Reservar
+                <button
+                  onClick={handleReservation}
+                  style={{
+                    background: "#e53935",
+                    color: "#fff",
+                    border: "none",
+                    borderRadius: 6,
+                    padding: "10px 28px",
+                    fontWeight: 600,
+                    fontSize: 18,
+                    cursor: "pointer",
+                    marginTop: 8,
+                    boxShadow: "0 2px 8px #0005"
+                  }}
+                >
+                  Hacer reserva
                 </button>
+              )}
+              {message && (
+                <div style={{ marginTop: 12, color: message.includes("éxito") ? "lightgreen" : "yellow", fontWeight: 600 }}>
+                  {message}
+                </div>
               )}
             </div>
           </div>
