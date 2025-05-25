@@ -39,6 +39,21 @@ export default function Home() {
     fetchCars();
   }, []);
 
+  const filteredCars = cars
+    .filter(car => {
+      if (selectedCategory === 'Destacados') return true;
+      if (selectedCategory === '2 Pasajeros') return car.pasajeros === 2;
+      if (selectedCategory === '5 Pasajeros') return car.pasajeros === 5;
+      if (selectedCategory === '6 - 8 Pasajeros') return car.pasajeros >= 6 && car.pasajeros <= 8;
+      if (selectedCategory === 'Especiales') return car.especial === true;
+      return true;
+    })
+    .sort((a, b) => {
+      if (sort === 'asc') return a.precio - b.precio;
+      if (sort === 'desc') return b.precio - a.precio;
+      return 0;
+    });
+
   return (
     <div style={{ fontFamily: 'sans-serif', background: '#111' }}>
       {/* Header */}
@@ -148,7 +163,6 @@ export default function Home() {
         <div style={{ position: 'relative', zIndex: 2, marginLeft: 40 }}>
           <Image src="/logo.png" alt="Carbnb Logo" width={314.6} height={133.1} />
         </div>
-        {/* Selector de orden sobre la imagen, alineado a la derecha y más abajo */}
         <div style={{ position: 'absolute', top: '92%', right: '2.2%', zIndex: 3, transform: 'translateY(-50%)' }}>
           <select
             value={sort}
@@ -171,6 +185,7 @@ export default function Home() {
           </select>
         </div>
       </section>
+
       {/* Filtros de categorías */}
       <div style={{ display: 'flex', width: '100%', background: '#222', padding: '0 2rem', borderBottom: `2px solid ${RACING_RED}` }}>
         {categories.map((category) => (
@@ -197,6 +212,7 @@ export default function Home() {
           </button>
         ))}
       </div>
+
       {/* Grid de autos */}
       <main
         style={{
@@ -207,7 +223,7 @@ export default function Home() {
           padding: '10px 32px',
         }}
       >
-        {cars.map((car, idx) => (
+        {filteredCars.map((car, idx) => (
           <Link href={`/car/${car.id}`} key={car.id || idx} style={{ textDecoration: 'none' }}>
             <div
               style={{
@@ -242,3 +258,4 @@ export default function Home() {
     </div>
   );
 }
+
