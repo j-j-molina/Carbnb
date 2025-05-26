@@ -96,7 +96,7 @@ export default function CarDetail() {
             </>
           ) : (
             <>
-              <button onClick={() => router.push('/reservations')} style={{ background: '#bd162c', border: 'none', color: '#fff', fontWeight: 600, fontSize: 16, cursor: 'pointer', marginRight: 8, borderRadius: 6, padding: '6px 18px' }}>Mis reservaciones</button>
+              <button onClick={() => router.push('/reservations')} style={{ background: '#bd162c', border: 'none', color: '#fff', fontWeight: 600, fontSize: 16, cursor: 'pointer', marginRight: 8, borderRadius: 6, padding: '6px 18px' }}>Mis Reservaciones</button>
               <button onClick={() => { getAuth().signOut(); router.push('/'); }} style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}>
                 <img src="/shutdown.png" alt="Cerrar sesión" style={{ height: 28, width: 28 }} />
               </button>
@@ -156,7 +156,7 @@ export default function CarDetail() {
                     boxShadow: "0 2px 8px #0005"
                   }}
                 >
-                  Hacer reserva
+                  Hacer Reserva
                 </button>
               )}
               {message && (
